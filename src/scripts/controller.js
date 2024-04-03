@@ -1065,7 +1065,7 @@ export default class AngularColorPickerController {
         if (this[listenerName] && typeof this[listenerName] === 'function') {
             args.color = this.internalNgModel;
             args.api = this.api;
-            this.eventApi[`${name}Listener`](args);
+            this[`${name}Listener`](args);
         }
     }
 
