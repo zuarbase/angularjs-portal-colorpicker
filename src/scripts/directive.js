@@ -6,8 +6,9 @@ export default function colorPickerDirective () {
         require: ['^ngModel'],
         scope: {
             ngModel: '=',
-            options: '=?',
+            options: '<?',
             api: '=?',
+            pickerDisabled: '<?',
             // Events
             // `Listener` was added to names to avoid
             // name conflict with internal listeners

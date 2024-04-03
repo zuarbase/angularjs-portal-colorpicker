@@ -136,7 +136,7 @@ export default class AngularColorPickerController {
 
         this.$scope.$watchGroup(
             [
-                'AngularColorPickerController.options.disabled',
+                'AngularColorPickerController.pickerDisabled',
                 'AngularColorPickerController.options.swatchBootstrap',
                 'AngularColorPickerController.options.swatchOnly',
                 'AngularColorPickerController.options.swatch',
@@ -327,7 +327,7 @@ export default class AngularColorPickerController {
         this.has_moused_moved = false;
 
         // if disabled or not an element in this picker then do nothing
-        if (this.options.disabled || this.find(event.target).length === 0) {
+        if (this.pickerDisabled || this.find(event.target).length === 0) {
             return true;
         }
 
@@ -393,7 +393,7 @@ export default class AngularColorPickerController {
     }
 
     onClick(type, event) {
-        if (!this.options.disabled && !this.has_moused_moved) {
+        if (!this.pickerDisabled && !this.has_moused_moved) {
             this.valueChange(type, event);
             this.mouseEventToggle(type, true, event);
             this.onChange(event);
@@ -425,7 +425,7 @@ export default class AngularColorPickerController {
     }
 
     onSwatchClick($event) {
-        if (this.options.show.swatch && !this.options.disabled) {
+        if (this.options.show.swatch && !this.pickerDisabled) {
             this.api.open($event);
         }
     }
