@@ -217,7 +217,7 @@ export default class AngularColorPickerController {
             if (isValid) {
                 this.setColorValue(color);
 
-                this.updateModel = false;
+                this.update();
 
                 this.$timeout(() => {
                     this.updateModel = true;

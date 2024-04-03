@@ -367,7 +367,7 @@ var AngularColorPickerController = function () {
                 if (isValid) {
                     this.setColorValue(color);
 
-                    this.updateModel = false;
+                    this.update();
 
                     this.$timeout(function () {
                         _this2.updateModel = true;
