@@ -216,12 +216,8 @@ export default class AngularColorPickerController {
 
             if (isValid) {
                 this.setColorValue(color);
-
                 this.update();
-
-                this.$timeout(() => {
-                    this.updateModel = true;
-                });
+                this.onChange();
             }
 
             this.$scope.control[0].$setValidity('color', isValid);
@@ -408,13 +404,6 @@ export default class AngularColorPickerController {
         // don't fire if it hasn't actually changed
         if (this.internalNgModel !== this.onChangeValue) {
             this.onChangeValue = this.internalNgModel;
-            var color = tinycolor(this.onChangeValue);
-
-            if (this.isColorValid(color)) {
-                this.updateModel = true;
-                this.update();
-            }
-
             this.eventApiDispatch('onChange', {event});
         }
     }
