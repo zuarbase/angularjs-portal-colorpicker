@@ -95,8 +95,6 @@ export default class AngularColorPickerController {
     initWatchers() {
 
         // ngModel
-
-        this.$scope.$watch('AngularColorPickerController.internalNgModel', this.watchInternalNgModel.bind(this));
         this.$scope.$watch('AngularColorPickerController.ngModel', this.watchNgModel.bind(this));
 
         // options
@@ -176,14 +174,14 @@ export default class AngularColorPickerController {
         });
     }
 
-    watchInternalNgModel(newValue, oldValue) {
+    onInternalNgModelChange(event) {
         // the mouse is still moving so don't do anything yet
         if (this.colorMouse) {
             return;
         }
 
         // calculate and set color values
-        this.watchNgModelSet(newValue, true);
+        this.watchNgModelSet(this.internalNgModel, true);
     }
 
     /** Triggered on change to internal or external ngModel value */
