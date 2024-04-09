@@ -183,7 +183,7 @@ export default class AngularColorPickerController {
         }
 
         // calculate and set color values
-        this.watchNgModelSet(newValue);
+        this.watchNgModelSet(newValue, true);
     }
 
     /** Triggered on change to internal or external ngModel value */
@@ -205,19 +205,21 @@ export default class AngularColorPickerController {
         }
 
         // calculate and set color values
-        this.watchNgModelSet(newValue);
+        this.watchNgModelSet(newValue, false);
     }
 
     /** Helper for watchNgModel to set internal values and validity */
-    watchNgModelSet(newValue) {
+    watchNgModelSet(newValue, shouldUpdate) {
         if (newValue !== undefined && newValue !== null) {
             var color = tinycolor(newValue);
             var isValid = this.isColorValid(color);
 
             if (isValid) {
                 this.setColorValue(color);
-                this.update();
-                this.onChange();
+                if (shouldUpdate) {
+                    this.update();
+                    this.onChange();
+                }
             }
 
             this.$scope.control[0].$setValidity('color', isValid);
