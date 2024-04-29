@@ -1,4 +1,4 @@
-/* angularjs-portal-colorpicker v1.0.1 */
+/* angularjs-portal-colorpicker v1.0.3 */
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('tinycolor2')) :
@@ -652,7 +652,7 @@ var AngularColorPickerController = function () {
             this.api.reset = function (event) {
                 if (_this3.internalNgModel !== _this3.initialNgModel) {
                     _this3.setNgModel(_this3.initialNgModel);
-
+                    _this3.onChange();
                     _this3.eventApiDispatch('onReset', { event: event });
                 }
             };

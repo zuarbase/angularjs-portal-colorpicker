@@ -488,7 +488,7 @@ export default class AngularColorPickerController {
         this.api.reset = (event) => {
             if (this.internalNgModel !== this.initialNgModel) {
                 this.setNgModel(this.initialNgModel);
-
+                this.onChange();
                 this.eventApiDispatch('onReset', {event});
             }
         };
