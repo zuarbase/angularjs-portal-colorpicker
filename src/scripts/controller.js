@@ -18,6 +18,7 @@ export default class AngularColorPickerController {
         this.saturation = undefined;
         this.lightness = undefined;
         this.opacity = undefined;
+        this.inputHexRegex = /^#(?:[0-9a-fA-F]{3}){2}$/;
 
         this.basicEventTypes = ['hue', 'saturation', 'lightness', 'opacity'];
         this.fullEventTypes = ['color', 'hue', 'saturation', 'lightness', 'opacity'];
@@ -213,11 +214,11 @@ export default class AngularColorPickerController {
             var isValid = this.isColorValid(color);
 
             if (isValid) {
-                this.setColorValue(color);
                 if (shouldUpdate) {
                     this.update();
                     this.onChange();
                 }
+                this.setColorValue(color);
             }
 
             this.$scope.control[0].$setValidity('color', isValid);
@@ -895,8 +896,13 @@ export default class AngularColorPickerController {
         let isValid = color.isValid();
 
         if (isValid && this.options.restrictToFormat) {
-            let format = this.options.format;
-            isValid = color.getFormat() === this.getTinyColorFormat();
+            let format = this.getTinyColorFormat();
+            isValid = color.getFormat() === format;
+
+            if (format === 'hex') {
+                let input = color.getOriginalInput();
+                isValid = this.inputHexRegex.test(input);
+            }
         }
 
         if (!isValid && this.options.allowEmpty) {

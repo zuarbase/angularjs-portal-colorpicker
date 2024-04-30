@@ -179,6 +179,7 @@ var AngularColorPickerController = function () {
         this.saturation = undefined;
         this.lightness = undefined;
         this.opacity = undefined;
+        this.inputHexRegex = /^#(?:[0-9a-fA-F]{3}){2}$/;
 
         this.basicEventTypes = ['hue', 'saturation', 'lightness', 'opacity'];
         this.fullEventTypes = ['color', 'hue', 'saturation', 'lightness', 'opacity'];
@@ -361,11 +362,11 @@ var AngularColorPickerController = function () {
                 var isValid = this.isColorValid(color);
 
                 if (isValid) {
-                    this.setColorValue(color);
                     if (shouldUpdate) {
                         this.update();
                         this.onChange();
                     }
+                    this.setColorValue(color);
                 }
 
                 this.$scope.control[0].$setValidity('color', isValid);
@@ -1080,13 +1081,19 @@ var AngularColorPickerController = function () {
             var isValid = color.isValid();
 
             if (isValid && this.options.restrictToFormat) {
-                isValid = color.getFormat() === this.getTinyColorFormat();
+                var format = this.getTinyColorFormat();
+                isValid = color.getFormat() === format;
+
+                if (format === 'hex') {
+                    var input = color.getOriginalInput();
+                    isValid = this.inputHexRegex.test(input);
+                }
             }
 
             if (!isValid && this.options.allowEmpty) {
-                var input = color.getOriginalInput();
+                var _input = color.getOriginalInput();
 
-                if (input === undefined || input === null || input === '') {
+                if (_input === undefined || _input === null || _input === '') {
                     isValid = true;
                 }
             }
