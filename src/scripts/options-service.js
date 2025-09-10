@@ -8,13 +8,16 @@ export default class AngularColorPickerOptions {
             disabled: false,
             placeholder: '',
             inputClass: '',
+
             // validation
             restrictToFormat: false,
             preserveInputFormat: false,
             allowEmpty: false,
+
             // color
             format: 'hsl',
             case: 'upper',
+
             // sliders
             hue: true,
             saturation: false,
@@ -24,16 +27,19 @@ export default class AngularColorPickerOptions {
             dynamicSaturation: true,
             dynamicLightness: true,
             dynamicAlpha: true,
+
             // picker
             round: false,
             pos: 'bottom left',
             inline: false,
             horizontal: false,
+
             // swatch
             swatch: true,
             swatchOnly: false,
             swatchPos: 'left',
             swatchBootstrap: true,
+
             // show/hide events
             show: {
                 swatch: true,

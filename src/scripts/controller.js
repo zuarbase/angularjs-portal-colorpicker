@@ -1,12 +1,13 @@
 import tinycolor from 'tinycolor2';
 
 export default class AngularColorPickerController {
-    constructor(_$scope, _$element, _$document, _$timeout, _ColorPickerOptions) {
+    constructor(_$scope, _$element, _$document, _$window, _$timeout, _ColorPickerOptions) {
         // set angular injected variables
         this.$scope = _$scope;
         this.$element = _$element;
         this.$document = _$document;
         this.$timeout = _$timeout;
+        this.$window = _$window;
         this.ColorPickerOptions = _ColorPickerOptions;
 
         // make the init function available from the $scope (for the directive link function)
@@ -28,7 +29,7 @@ export default class AngularColorPickerController {
     // init functions
     //---------------------------
 
-    init() {
+    init () {
 
         // ng model options
         if (this.$scope.control[0].$options && this.$scope.control[0].$options.$$options) {
@@ -53,7 +54,7 @@ export default class AngularColorPickerController {
         this.initMouseEvents();
     }
 
-    initConfig() {
+    initConfig () {
         if (!this.options) {
             this.options = {};
         }
@@ -77,7 +78,7 @@ export default class AngularColorPickerController {
         };
     }
 
-    mergeOptions(options, defaultOptions) {
+    mergeOptions (options, defaultOptions) {
         for (var attr in defaultOptions) {
             if (defaultOptions.hasOwnProperty(attr)) {
                 if (!options || !options.hasOwnProperty(attr)) {
@@ -93,7 +94,7 @@ export default class AngularColorPickerController {
     // watcher functions
     //---------------------------
 
-    initWatchers() {
+    initWatchers () {
 
         // ngModel
         this.$scope.$watch('AngularColorPickerController.ngModel', this.watchNgModel.bind(this));
@@ -175,7 +176,7 @@ export default class AngularColorPickerController {
         });
     }
 
-    onInternalNgModelChange(event) {
+    onInternalNgModelChange (event) {
         // the mouse is still moving so don't do anything yet
         if (this.colorMouse) {
             return;
@@ -186,7 +187,7 @@ export default class AngularColorPickerController {
     }
 
     /** Triggered on change to internal or external ngModel value */
-    watchNgModel(newValue, oldValue) {
+    watchNgModel (newValue, oldValue) {
         // set initial value if not already set
         if (newValue !== undefined && !this.hasOwnProperty('initialNgModel')) {
             this.initialNgModel = newValue;
@@ -208,7 +209,7 @@ export default class AngularColorPickerController {
     }
 
     /** Helper for watchNgModel to set internal values and validity */
-    watchNgModelSet(newValue, shouldUpdate) {
+    watchNgModelSet (newValue, shouldUpdate) {
         if (newValue !== undefined && newValue !== null) {
             var color = tinycolor(newValue);
             var isValid = this.isColorValid(color);
@@ -238,7 +239,7 @@ export default class AngularColorPickerController {
     // mouse/touch event functions
     //---------------------------
 
-    initMouseEvents() {
+    initMouseEvents () {
         const eventHandlers = {
             mouseDown: this.onMouseDown.bind(this),
             mouseUp: this.onMouseUp.bind(this),
@@ -324,7 +325,7 @@ export default class AngularColorPickerController {
         });
     }
 
-    onMouseDown(event) {
+    onMouseDown (event) {
         this.has_moused_moved = false;
 
         // if disabled or not an element in this picker then do nothing
@@ -337,20 +338,20 @@ export default class AngularColorPickerController {
         }
     }
 
-    onMouseDownType(type, event) {
+    onMouseDownType (type, event) {
         if (
             type === 'color' &&
             (event.target.classList.contains('color-picker-grid-inner') ||
-            event.target.classList.contains('color-picker-picker') ||
-            event.target.parentNode.classList.contains('color-picker-picker'))
+                event.target.classList.contains('color-picker-picker') ||
+                event.target.parentNode.classList.contains('color-picker-picker'))
         ) {
             this.mouseEventToggle(type, false, event);
         } else if (event.target.classList.contains(`color-picker-${type}`) || event.target.parentNode.classList.contains(`color-picker-${type}`)) {
-           this.mouseEventToggle(type, false, event);
-       }
+            this.mouseEventToggle(type, false, event);
+        }
     }
 
-    onMouseUp(event) {
+    onMouseUp (event) {
         // no current mouse events and not an element in the picker
         if (!this.anyMouseEvents() && this.find(event.target).length === 0) {
             this.setupApi();
@@ -365,20 +366,20 @@ export default class AngularColorPickerController {
         }
     }
 
-    onMouseUpType(type, event) {
+    onMouseUpType (type, event) {
         if (this[`${type}Mouse`] && this.has_moused_moved) {
             this.mouseEventToggle(type, true, event);
             this.onChange(event);
         }
     }
 
-    onMouseMove(event) {
+    onMouseMove (event) {
         for (var i = 0; i < this.fullEventTypes.length; i++) {
             this.onMouseMoveType(this.fullEventTypes[i], event);
         }
     }
 
-    onMouseMoveType(type, event) {
+    onMouseMoveType (type, event) {
         if (this[`${type}Mouse`]) {
             this.has_moused_moved = true;
             this.valueChange(type, event);
@@ -386,14 +387,14 @@ export default class AngularColorPickerController {
         }
     }
 
-    onKeyUp(event) {
+    onKeyUp (event) {
         // escape key
         if (this.options.hide.escape && event.keyCode === 27) {
             this.api.close(event);
         }
     }
 
-    onClick(type, event) {
+    onClick (type, event) {
         if (!this.pickerDisabled && !this.has_moused_moved) {
             this.valueChange(type, event);
             this.mouseEventToggle(type, true, event);
@@ -401,15 +402,15 @@ export default class AngularColorPickerController {
         }
     }
 
-    onChange(event) {
+    onChange (event) {
         // don't fire if it hasn't actually changed
         if (this.internalNgModel !== this.onChangeValue) {
             this.onChangeValue = this.internalNgModel;
-            this.eventApiDispatch('onChange', {event});
+            this.eventApiDispatch('onChange', { event });
         }
     }
 
-    onBlur(event) {
+    onBlur (event) {
         if (this.internalNgModel !== this.onChangeValue || this.internalNgModel !== this.ngModel) {
             this.updateModel = true;
             this.update();
@@ -417,7 +418,7 @@ export default class AngularColorPickerController {
 
         this.$scope.control[0].$setTouched();
 
-        this.eventApiDispatch('onBlur', {event});
+        this.eventApiDispatch('onBlur', { event });
 
         // if clicking outside the color picker
         if (this.options.hide.blur && this.find(event.relatedTarget).length === 0) {
@@ -425,13 +426,13 @@ export default class AngularColorPickerController {
         }
     }
 
-    onSwatchClick($event) {
+    onSwatchClick ($event) {
         if (this.options.show.swatch && !this.pickerDisabled) {
             this.api.open($event);
         }
     }
 
-    onFocus($event) {
+    onFocus ($event) {
         if (this.options.show.focus) {
             this.api.open($event);
         }
@@ -442,7 +443,7 @@ export default class AngularColorPickerController {
     //---------------------------
 
     /** Sets up the external api */
-    setupApi() {
+    setupApi () {
         if (!this.api) {
             this.api = {};
         }
@@ -460,13 +461,17 @@ export default class AngularColorPickerController {
 
             // force redraw
             this.$scope.$applyAsync();
-
+            this.$timeout(() => {
+                let $picker = this.$element.find('.color-picker-panel');
+                let position = this.getAdjustedPickerPosition($picker);
+                $picker.css(position);
+            });
             // force the sliders to re-caculate their position
             for (var i = 0; i < this.basicEventTypes.length; i++) {
                 this.valueUpdate(this.basicEventTypes[i]);
             }
 
-            this.eventApiDispatch('onOpen', {event});
+            this.eventApiDispatch('onOpen', { event });
         };
 
         this.api.close = (event) => {
@@ -476,21 +481,21 @@ export default class AngularColorPickerController {
                 this.$scope.$applyAsync();
 
                 this.update();
-                this.eventApiDispatch('onClose', {event});
+                this.eventApiDispatch('onClose', { event });
             }
         };
 
         this.api.clear = (event) => {
             this.setNgModel(null);
 
-            this.eventApiDispatch('onClear', {event});
+            this.eventApiDispatch('onClear', { event });
         };
 
         this.api.reset = (event) => {
             if (this.internalNgModel !== this.initialNgModel) {
                 this.setNgModel(this.initialNgModel);
                 this.onChange();
-                this.eventApiDispatch('onReset', {event});
+                this.eventApiDispatch('onReset', { event });
             }
         };
 
@@ -508,7 +513,7 @@ export default class AngularColorPickerController {
     //---------------------------
 
     /** Sets the internal and external ngModel values */
-    setNgModel(value) {
+    setNgModel (value) {
         this.internalNgModel = value;
 
         if (this.ngModelOptions.getterSetter) {
@@ -518,7 +523,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    update() {
+    update () {
         if (!this.areAllValuesSet()) {
             return false;
         }
@@ -565,13 +570,13 @@ export default class AngularColorPickerController {
     // generic value functions
     //---------------------------
 
-    mouseEventToggle(type, up, event) {
+    mouseEventToggle (type, up, event) {
         this.stopEvent(event);
         this[`${type}Mouse`] = !up;
         this.$scope.$apply();
     }
 
-    valueChange(type, event) {
+    valueChange (type, event) {
         this.stopEvent(event);
 
         if (type === 'color') {
@@ -591,7 +596,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    valueUpdate(type) {
+    valueUpdate (type) {
         if (this[type] !== undefined) {
             if (type === 'saturation') {
                 this[`${type}Pos`] = this[type];
@@ -620,7 +625,7 @@ export default class AngularColorPickerController {
     // hue functions
     //---------------------------
 
-    huePosUpdate() {
+    huePosUpdate () {
         var el = angular.element(this.$element[0].querySelector('.color-picker-hue .color-picker-slider'));
 
         if (this.options.horizontal) {
@@ -636,7 +641,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    updateHueBackground(color) {
+    updateHueBackground (color) {
         var el = this.find('.color-picker-hue .color-picker-overlay');
         var direction = this.options.horizontal ? 'left' : 'top';
 
@@ -672,7 +677,7 @@ export default class AngularColorPickerController {
     // saturation functions
     //---------------------------
 
-    saturationPosUpdate() {
+    saturationPosUpdate () {
         var el;
 
         if (!this.options.round) {
@@ -698,7 +703,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    updateSaturationBackground(color) {
+    updateSaturationBackground (color) {
         var el = this.find('.color-picker-saturation .color-picker-overlay');
         var direction = this.options.horizontal ? 'right' : 'bottom';
         var high = this.getColorValue(this.options.dynamicSaturation);
@@ -716,7 +721,7 @@ export default class AngularColorPickerController {
     // lightness functions
     //---------------------------
 
-    lightnessPosUpdate() {
+    lightnessPosUpdate () {
         var el;
 
         if (!this.options.round) {
@@ -742,7 +747,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    updateLightnessBackground(color) {
+    updateLightnessBackground (color) {
         var el = this.find('.color-picker-lightness .color-picker-overlay');
         var direction = this.options.horizontal ? 'right' : 'bottom';
         var bright = this.getColorValue(this.options.dynamicLightness);
@@ -768,7 +773,7 @@ export default class AngularColorPickerController {
     // opacity functions
     //---------------------------
 
-    opacityPosUpdate() {
+    opacityPosUpdate () {
         var el = angular.element(this.$element[0].querySelector('.color-picker-opacity .color-picker-slider'));
 
         if (this.options.horizontal) {
@@ -784,7 +789,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    updateOpacityBackground(color) {
+    updateOpacityBackground (color) {
         var el = this.find('.color-picker-opacity .color-picker-overlay');
         var direction = this.options.horizontal ? 'right' : 'bottom';
         var opaque = this.getColorValue(this.options.dynamicAlpha);
@@ -802,7 +807,7 @@ export default class AngularColorPickerController {
     // color functions
     //---------------------------
 
-    colorChange(event) {
+    colorChange (event) {
         this.stopEvent(event);
 
         var el = this.find('.color-picker-grid-inner');
@@ -816,7 +821,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    colorChangeRound(el, offset, eventPos) {
+    colorChangeRound (el, offset, eventPos) {
         var dx = ((eventPos.pageX - offset.left) * 2.0 / el.prop('offsetWidth')) - 1.0;
         var dy = -((eventPos.pageY - offset.top) * 2.0 / el.prop('offsetHeight')) + 1.0;
 
@@ -842,7 +847,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    colorChangeSquare(el, offset, eventPos) {
+    colorChangeSquare (el, offset, eventPos) {
         this.saturation = ((eventPos.pageX - offset.left) / el.prop('offsetWidth')) * 100;
         this.lightness = (1 - ((eventPos.pageY - offset.top) / el.prop('offsetHeight'))) * 100;
 
@@ -859,7 +864,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    updateGridBackground(color) {
+    updateGridBackground (color) {
         var el = this.find('.color-picker-grid .color-picker-overlay');
         var background = this.getColorValue();
 
@@ -881,7 +886,7 @@ export default class AngularColorPickerController {
         });
     }
 
-    updateSwatchBackground() {
+    updateSwatchBackground () {
         var el = angular.element(this.$element[0].querySelector('.color-picker-swatch'));
         el.css({
             'background-color': this.swatchColor
@@ -892,7 +897,7 @@ export default class AngularColorPickerController {
     // helper functions
     //---------------------------
 
-    isColorValid(color) {
+    isColorValid (color) {
         let isValid = color.isValid();
 
         if (isValid && this.options.restrictToFormat) {
@@ -916,7 +921,7 @@ export default class AngularColorPickerController {
         return isValid;
     }
 
-    getTinyColorFormat() {
+    getTinyColorFormat () {
         if (this.options.format === 'hexString') {
             return 'hex';
         } else if (this.options.format === 'hex8String') {
@@ -926,7 +931,7 @@ export default class AngularColorPickerController {
         return this.options.format;
     }
 
-    areAllValuesSet() {
+    areAllValuesSet () {
         if (this.hue === undefined || this.saturation === undefined || this.lightness === undefined) {
             return false;
         }
@@ -934,11 +939,11 @@ export default class AngularColorPickerController {
         return true;
     }
 
-    getColorValue(dynamicValues = true, includeOpacity = true) {
+    getColorValue (dynamicValues = true, includeOpacity = true) {
         let value = {
             h: this.hue,
             s: dynamicValues ? `${this.saturation}%` : '100%',
-            v: dynamicValues ? `${this.lightness}%`: '100%'
+            v: dynamicValues ? `${this.lightness}%` : '100%'
         };
 
         if (this.options.round) {
@@ -957,7 +962,7 @@ export default class AngularColorPickerController {
     }
 
     /* eslint-disable complexity */
-    setColorValue(color) {
+    setColorValue (color) {
         let noMouseEvents = !this.anyMouseEvents();
         let hsl = this.options.round ? color.toHsl() : color.toHsv();
 
@@ -979,7 +984,7 @@ export default class AngularColorPickerController {
     }
     /* eslint-enable complexity */
 
-    checkDirty(color) {
+    checkDirty (color) {
         // check dirty/pristine state
         if (this.hasOwnProperty('initialNgModel')) {
             if (color === this.initialNgModel) {
@@ -994,12 +999,32 @@ export default class AngularColorPickerController {
         }
     }
 
-    stopEvent(event) {
+    getAdjustedPickerPosition ($picker) {
+        let position = {};
+        let wWidth = this.$window.innerWidth,
+            wHeight = this.$window.innerHeight,
+            eWidth = $picker.outerWidth(),
+            eHeight = $picker.outerHeight(),
+            { left, top } = $picker.offset();
+
+        let newLeft = Math.min(0, wWidth - (left + eWidth));
+        if (newLeft !== 0) {
+            position.left = newLeft;
+        }
+
+        let newTop = Math.min(0, wHeight - (top + eHeight));
+        if (newTop !== 0) {
+            position.top = newTop;
+        }
+        return position;
+    }
+
+    stopEvent (event) {
         event.stopPropagation();
         event.preventDefault();
     }
 
-    getRoundPos() {
+    getRoundPos () {
         var angle = this.hue * 0.01745329251994; // deg to rad
         var px = Math.cos(angle) * this.saturation;
         var py = -Math.sin(angle) * this.saturation;
@@ -1022,7 +1047,7 @@ export default class AngularColorPickerController {
         }
     }
 
-    updateRoundPos() {
+    updateRoundPos () {
         var el = angular.element(this.$element[0].querySelector('.color-picker-grid .color-picker-picker'));
 
         el.css({
@@ -1031,7 +1056,7 @@ export default class AngularColorPickerController {
         });
     }
 
-    getEventPos(event) {
+    getEventPos (event) {
         // if a touch event
         if (event.type.search('touch') === 0) {
             // if event modified by angular
@@ -1047,7 +1072,7 @@ export default class AngularColorPickerController {
         return event;
     }
 
-    calculateSliderPos(el, eventPos, multiplier) {
+    calculateSliderPos (el, eventPos, multiplier) {
         if (this.options.horizontal) {
             return Math.round((1 - ((eventPos.pageX - this.offset(el).left) / el.prop('offsetWidth'))) * multiplier);
         }
@@ -1055,7 +1080,7 @@ export default class AngularColorPickerController {
         return Math.round((1 - ((eventPos.pageY - this.offset(el).top) / el.prop('offsetHeight'))) * multiplier);
     }
 
-    eventApiDispatch(name, args = {}) {
+    eventApiDispatch (name, args = {}) {
         let listenerName = `${name}Listener`;
         if (this[listenerName] && typeof this[listenerName] === 'function') {
             args.color = this.internalNgModel;
@@ -1065,7 +1090,7 @@ export default class AngularColorPickerController {
     }
 
     /** taken and modified from jQuery's find */
-    find(selector) {
+    find (selector) {
         var context = this.wrapper ? this.wrapper[0] : this.$element[0],
             results = [],
             nodeType;
@@ -1093,7 +1118,7 @@ export default class AngularColorPickerController {
     }
 
     /** taken and modified from jQuery's offset */
-    offset(el) {
+    offset (el) {
         var docElem, win, rect, doc, elem = el[0];
 
         if (!elem) {
@@ -1136,17 +1161,17 @@ export default class AngularColorPickerController {
         return rect;
     }
 
-    getWindowElements(doc) {
+    getWindowElements (doc) {
         return doc !== null && doc === doc.window ? doc : doc.nodeType === 9 && doc.defaultView;
     }
 
-    anyMouseEvents() {
+    anyMouseEvents () {
         return this.colorMouse || this.hueMouse || this.saturationMouse || this.lightnessMouse || this.opacityMouse;
     }
 
-    getMaxFromType(type) {
+    getMaxFromType (type) {
         return type === 'hue' ? 360 : 100;
     }
 }
 
-AngularColorPickerController.$inject = ['$scope', '$element', '$document', '$timeout', 'ColorPickerOptions'];
+AngularColorPickerController.$inject = ['$scope', '$element', '$document', '$window', '$timeout', 'ColorPickerOptions'];

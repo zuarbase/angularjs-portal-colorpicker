@@ -1,5 +1,6 @@
 var babel = require('rollup-plugin-babel');
 var uglify = require('rollup-plugin-uglify');
+var { string } = require('rollup-plugin-string');
 var es2015Rollup = require('babel-preset-es2015-rollup');
 var moment = require('moment');
 
@@ -11,22 +12,29 @@ module.exports = {
     options: {
         input: 'src/scripts/module.js',
         plugins: [
+            string({
+                include: "**/*.html"
+            }),
             babel({
                 exclude: 'node_modules/**',
-                presets: [ es2015Rollup ]
-            })
+                presets: [es2015Rollup]
+            }),
+
         ]
     },
     options_min: {
         input: 'src/scripts/module.js',
         plugins: [
+            string({
+                include: "**/*.html"
+            }),
             babel({
                 exclude: 'node_modules/**',
-                presets: [ es2015Rollup ]
+                presets: [es2015Rollup]
             }),
             uglify({
                 output: {
-                    comments: function(node, comment) {
+                    comments: function (node, comment) {
                         var text = comment.value;
                         var type = comment.type;
                         if (type === 'comment2') {
@@ -48,18 +56,18 @@ module.exports = {
             tinycolor2: 'tinycolor',
         },
     },
-    writeFile: function(writer, writeOptions) {
+    writeFile: function (writer, writeOptions) {
         try {
-            writer.write(writeOptions).then(function() {
+            writer.write(writeOptions).then(function () {
                 console.log('File created');
-            }, function() {
+            }, function () {
                 console.log(arguments);
             });
         } catch (e) {
             console.log(e);
         }
     },
-    reject: function(response) {
+    reject: function (response) {
         console.log(response);
     }
 };
